@@ -1,14 +1,14 @@
 'use strict';
 const Git = require('./git');
-const ReadRole = require('./roleReader');
-
+const ReadDir = require('./dirReader');
+const Path = require('path');
 const repo = 'git@github.com:STEAMULO/ansible-role-mysql.git';
-const workingDir = './roles';
+const workingDir = 'roles';
 
 const checkoutAndReadTag = function (repoName, tag) {
 
-    return Git.checkout(repoName, tag)
-        .then(() => ReadRole.readRole(workingDir + '/' + Git.getRepoName(repoName)));
+    return Git.checkout(repoName, tag, workingDir)
+        .then(() => ReadDir(Path.join(__dirname, workingDir, Git.getRepoName(repoName))));
 };
 
 const readAllTaggedRoles = function (repoName, tagList) {
@@ -30,8 +30,8 @@ const readAllTaggedRoles = function (repoName, tagList) {
     });
 };
 
-Git.clone(repo)
-    .then(Git.listTags)
+Git.clone(repo, Path.join(__dirname, workingDir))
+    .then((rep) => Git.listTags(rep, Path.join(__dirname, workingDir)))
     .then((tags) => readAllTaggedRoles(Git.getRepoName(repo), tags))
     .then((done) => console.log(JSON.stringify(done)));
 

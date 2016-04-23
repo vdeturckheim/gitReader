@@ -1,19 +1,20 @@
 'use strict';
 const Rimraf = require('rimraf');
+const Path = require('path');
 
 const getRepoName = module.exports.getRepoName = function (repoUrl) {
 
     return repoUrl.replace('.git','').split('/').pop();
 };
 
-module.exports.clone = function (repo) {
+module.exports.clone = function (repo, workingdir) {
 
     const repoName = getRepoName(repo);
     return new Promise((resolve, reject) => {
 
-        Rimraf(`./roles/${repoName}`, () => {
+        Rimraf(Path.join(workingdir, repoName), () => {
 
-            const Cloner = require('simple-git')('./roles');
+            const Cloner = require('simple-git')(workingdir);
             Cloner.clone(repo, repoName, (err) => {
 
                 if (err) {
@@ -25,9 +26,9 @@ module.exports.clone = function (repo) {
     });
 };
 
-module.exports.listTags = function (repoName) {
+module.exports.listTags = function (repoName, workingdir) {
 
-    const Git = require('simple-git')(`./roles/${repoName}`);
+    const Git = require('simple-git')(Path.join(workingdir, repoName));
     return new Promise((resolve, reject) => {
 
         Git.tags((err, tags) => {
@@ -41,9 +42,9 @@ module.exports.listTags = function (repoName) {
     });
 };
 
-module.exports.checkout = function (repoName, toCheckout) {
+module.exports.checkout = function (repoName, toCheckout, workingdir) {
 
-    const Git = require('simple-git')(`./roles/${repoName}`);
+    const Git = require('simple-git')(Path.join(workingdir, repoName));
     return new Promise((resolve, reject) => {
 
         Git.checkout(toCheckout, (err) => {
