@@ -43,8 +43,9 @@ const mkdirp = function (dir) {
     });
 };
 
-const main = function (repo, workingDir) {
+const main = function (repo) {
 
+    const workingDir = 'tmp'; // TODO: clean this sometimes
     return mkdirp(Path.join(__dirname, workingDir))
         .then(() => Git.clone(repo, Path.join(__dirname, workingDir)))
         .then((rep) => Git.listTags(rep, Path.join(__dirname, workingDir)))

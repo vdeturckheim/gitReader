@@ -44,7 +44,7 @@ module.exports.listTags = function (repoName, workingdir) {
 
 module.exports.checkout = function (repoName, toCheckout, workingdir) {
 
-    const Git = require('simple-git')(Path.join(workingdir, repoName));
+    const Git = require('simple-git')(Path.join(__dirname, workingdir, repoName));
     return new Promise((resolve, reject) => {
 
         Git.checkout(toCheckout, (err) => {
